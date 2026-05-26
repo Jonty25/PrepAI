@@ -1,15 +1,9 @@
 const multer = require("multer");
-const path = require("path");
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
-  filename: function (req, file, cb) {
-    const uniqueName = `${req.user._id}_${Date.now()}_${file.originalname}`;
-    cb(null, uniqueName);
-  },
-});
+// Use memory storage instead of disk storage
+// This stores the file in memory as a Buffer
+// Works on all hosting platforms including Render
+const storage = multer.memoryStorage();
 
 const fileFilter = function (req, file, cb) {
   if (file.mimetype === "application/pdf") {

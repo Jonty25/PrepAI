@@ -10,14 +10,12 @@ const uploadResume = async (req, res) => {
       return res.status(400).json({ message: "No file uploaded" });
     }
 
-    const pdfBuffer = fs.readFileSync(req.file.path);
+    // With memoryStorage, file is in req.file.buffer
+    const pdfBuffer = req.file.buffer;
     const pdfData = await pdfParse(pdfBuffer);
     const extractedText = pdfData.text;
-    console.log("Extracted text length:", extractedText.length);
-console.log("Extracted text sample:", extractedText.slice(0, 200));
 
     if (!extractedText || extractedText.trim().length < 10) {
-      fs.unlinkSync(req.file.path);
       return res.status(400).json({
         message: "Could not extract text from PDF",
       });
@@ -26,7 +24,7 @@ console.log("Extracted text sample:", extractedText.slice(0, 200));
     const resume = await Resume.create({
       user: req.user._id,
       fileName: req.file.originalname,
-      filePath: req.file.path,
+      filePath: req.file.originalname, // store filename only
       extractedText,
       status: "uploaded",
     });
@@ -86,10 +84,6 @@ const deleteResume = async (req, res) => {
 
     if (!resume) {
       return res.status(404).json({ message: "Resume not found" });
-    }
-
-    if (fs.existsSync(resume.filePath)) {
-      fs.unlinkSync(resume.filePath);
     }
 
     await resume.deleteOne();
