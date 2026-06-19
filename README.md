@@ -3,7 +3,7 @@
 PrepAI is a full stack web application that helps job seekers improve their resumes and practice interviews using Google Gemini AI.
 
 ## Live Demo
-> Coming soon after deployment
+ prep-ai-two-khaki.vercel.app
 
 ## Features
 
